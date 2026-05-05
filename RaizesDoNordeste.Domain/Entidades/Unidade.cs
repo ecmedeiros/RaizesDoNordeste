@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RaizesDoNordeste.Domain.Entidades
+﻿namespace RaizesDoNordeste.Domain.Entidades
 {
     public class Unidade : EntidadeBase
     {

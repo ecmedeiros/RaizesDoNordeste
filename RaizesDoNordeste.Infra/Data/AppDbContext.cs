@@ -10,7 +10,20 @@ namespace RaizesDoNordeste.Infra.Data
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
+        public DbSet<Usuario> Usuario { get; set; } 
+        public DbSet<PontosUsuario> PontosUsuario { get; set; }
         public DbSet<Unidade> Unidades { get; set; }
+        public DbSet<Produto> Produtos { get; set; }
+        public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<ItensPedido> ItensPedido { get; set; }
+        public DbSet<Estoque> Estoques { get; set; }
+        public DbSet<MovimentacaoEstoque> MovimentacaoEstoques { get; set; }
+        public DbSet<StatusPagamento> StatusPagamentos { get; set; }
+        public DbSet<Status> Status { get; set; }
+        public DbSet<UnidadeConfiguration> CanalPedido { get; set; }
+        public DbSet<Perfil> Perfil { get; set; }
+        public DbSet<TipoEstoque> TipoEstoque { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +31,10 @@ namespace RaizesDoNordeste.Infra.Data
 
             modelBuilder.Entity<Unidade>()
                 .HasIndex(u => u.CNPJ)
+                .IsUnique();
+
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
                 .IsUnique();
         }
 

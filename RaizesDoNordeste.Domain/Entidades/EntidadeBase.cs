@@ -1,6 +1,6 @@
 ﻿namespace RaizesDoNordeste.Domain.Entidades
 {
-    public class EntidadeBase
+    public class EntidadeBase : EntidadeId
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
