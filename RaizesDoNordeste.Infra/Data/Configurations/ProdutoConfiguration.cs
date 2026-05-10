@@ -16,6 +16,11 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
                 builder.Property(u => u.Nome)
                     .HasMaxLength(100)
                     .IsRequired();
+                
+                builder.Property(u => u.Descricao)
+                    .HasMaxLength(200)
+                    .IsRequired();
+                
                 builder.Property(u => u.Preco)
                     .IsRequired();
                 

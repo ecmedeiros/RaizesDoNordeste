@@ -11,9 +11,8 @@
         public Guid IdUnidade { get; set; }
         public bool EhEntrega { get; set; }
         public string Observacao { get; set; } = string.Empty;
-
         public Usuario Usuario { get; set; } = null!;
         public Unidade Unidade { get; set; } = null!;
-        public ICollection<ItensPedido> Itens { get; set; } = new List<ItensPedido>
+        public ICollection<ItensPedido> Itens { get; set; } = [];
     }
 }

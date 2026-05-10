@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using RaizesDoNordeste.Domain.Entidades;
+using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 
 namespace RaizesDoNordeste.Infra.Data
@@ -10,7 +11,7 @@ namespace RaizesDoNordeste.Infra.Data
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
-        public DbSet<Usuario> Usuario { get; set; } 
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<PontosUsuario> PontosUsuario { get; set; }
         public DbSet<Unidade> Unidades { get; set; }
         public DbSet<Produto> Produtos { get; set; }
@@ -20,7 +21,7 @@ namespace RaizesDoNordeste.Infra.Data
         public DbSet<MovimentacaoEstoque> MovimentacaoEstoques { get; set; }
         public DbSet<StatusPagamento> StatusPagamentos { get; set; }
         public DbSet<Status> Status { get; set; }
-        public DbSet<UnidadeConfiguration> CanalPedido { get; set; }
+        public DbSet<Unidade> CanalPedido { get; set; }
         public DbSet<Perfil> Perfil { get; set; }
         public DbSet<TipoEstoque> TipoEstoque { get; set; }
 
@@ -29,13 +30,9 @@ namespace RaizesDoNordeste.Infra.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Unidade>()
-                .HasIndex(u => u.CNPJ)
-                .IsUnique();
-
-            modelBuilder.Entity<Usuario>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                Assembly.GetExecutingAssembly()
+            );
         }
 
         public override Task<int> SaveChangesAsync(

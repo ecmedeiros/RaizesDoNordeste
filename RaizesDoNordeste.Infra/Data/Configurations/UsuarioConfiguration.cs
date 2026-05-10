@@ -23,6 +23,9 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
                 builder.Property(u => u.Senha)
                     .HasMaxLength(255);
 
+                builder.Property(u => u.IdPerfil)
+                    .IsRequired();
+
                 builder.Property(u => u.Ativo)
                     .HasDefaultValue(true);
 
