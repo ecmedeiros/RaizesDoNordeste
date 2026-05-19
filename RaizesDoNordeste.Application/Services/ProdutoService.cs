@@ -70,7 +70,7 @@ namespace RaizesDoNordeste.App.Services
         }
 
         public async Task<ProdutoResponse> Atualizar(
-        Guid id, ProdutoRequest request)
+        Guid id, AtualizarProdutoRequest request)
         {
             var produto = await produtoRepository.ObterPorId(id) ?? throw new KeyNotFoundException(
                     "Produto não encontrado."
@@ -91,6 +91,7 @@ namespace RaizesDoNordeste.App.Services
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
+                Ativo = produto.Ativo,
                 Preco = produto.Preco
             };
         }

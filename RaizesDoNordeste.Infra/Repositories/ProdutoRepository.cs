@@ -35,7 +35,7 @@ namespace RaizesDoNordeste.Infra.Repositories
         }
         public async Task Atualizar(Produto Produto)
         {
-            await _context.Produtos.AddAsync(Produto);
+            _context.Produtos.Update(Produto);
             await _context.SaveChangesAsync();
         }
     }

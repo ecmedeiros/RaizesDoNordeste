@@ -24,6 +24,10 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
                 builder.Property(u => u.Preco)
                     .IsRequired();
                 
+                builder.Property(u => u.Ativo)
+                    .HasDefaultValue(true)
+                    .IsRequired();
+                
                 builder.HasIndex(e => new { e.Nome, e.Preco })
                     .IsUnique();
             }
