@@ -1,10 +1,11 @@
-﻿namespace RaizesDoNordeste.Domain.Enums
+﻿using RaizesDoNordeste.Domain.Entidades;
+
+namespace RaizesDoNordeste.Domain.Interfaces
 {
-    public enum CanalPedido
+    public interface IUsuarioRepository
     {
-        App = 1,
-        Totem = 2,
-        Balcao = 3,
-        Web = 4,
+        Task<Usuario?> ObterPorEmail(string email);
+        Task<Usuario?> ObterPorId(Guid id);
+        Task Adicionar(Usuario usuario);
     }
 }

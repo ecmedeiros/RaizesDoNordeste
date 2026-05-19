@@ -137,6 +137,12 @@ namespace RaizesDoNordeste.Infra.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Usuarios_Perfils_IdPerfil",
+                        column: x => x.IdPerfil,
+                        principalTable: "Perfils",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,8 +153,8 @@ namespace RaizesDoNordeste.Infra.Migrations
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     IdProduto = table.Column<Guid>(type: "TEXT", nullable: false),
                     IdUnidade = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UnidadeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ProdutoId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UnidadeId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    ProdutoId = table.Column<Guid>(type: "TEXT", nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -159,14 +165,12 @@ namespace RaizesDoNordeste.Infra.Migrations
                         name: "FK_Estoques_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Estoques_Unidades_UnidadeId",
                         column: x => x.UnidadeId,
                         principalTable: "Unidades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -418,6 +422,11 @@ namespace RaizesDoNordeste.Infra.Migrations
                 table: "Usuarios",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_IdPerfil",
+                table: "Usuarios",
+                column: "IdPerfil");
         }
 
         /// <inheritdoc />
@@ -431,9 +440,6 @@ namespace RaizesDoNordeste.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "MovimentacaoEstoques");
-
-            migrationBuilder.DropTable(
-                name: "Perfils");
 
             migrationBuilder.DropTable(
                 name: "PontosUsuarios");
@@ -461,6 +467,9 @@ namespace RaizesDoNordeste.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "Unidades");
+
+            migrationBuilder.DropTable(
+                name: "Perfils");
         }
     }
 }

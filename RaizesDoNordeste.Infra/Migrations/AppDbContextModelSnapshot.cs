@@ -73,13 +73,13 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<Guid>("IdUnidade")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("ProdutoId")
+                    b.Property<Guid?>("ProdutoId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UnidadeId")
+                    b.Property<Guid?>("UnidadeId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -576,6 +576,8 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("IdPerfil");
+
                     b.ToTable("Usuarios", (string)null);
                 });
 
@@ -583,15 +585,11 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Produto", "Produto")
                         .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProdutoId");
 
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Unidade", "Unidade")
                         .WithMany()
-                        .HasForeignKey("UnidadeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UnidadeId");
 
                     b.Navigation("Produto");
 
@@ -664,6 +662,17 @@ namespace RaizesDoNordeste.Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Usuario", b =>
+                {
+                    b.HasOne("RaizesDoNordeste.Domain.Entidades.Perfil", "Perfil")
+                        .WithMany()
+                        .HasForeignKey("IdPerfil")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Perfil");
                 });
 
             modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Pedido", b =>

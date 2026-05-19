@@ -1,6 +1,6 @@
 ﻿namespace RaizesDoNordeste.Domain.Enums
 {
-    public enum IUsuarioRepository
+    public enum CanalPedido
     {
         App = 1,
         Totem = 2,

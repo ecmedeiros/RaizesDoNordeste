@@ -6,7 +6,7 @@
         public Guid IdProduto { get; set; }
         public Guid IdUnidade { get; set; }
 
-        public Unidade Unidade { get; set; } = null!;
-        public Produto Produto { get; set; } = null!;
+        public Unidade? Unidade { get; set; }
+        public Produto? Produto { get; set; }
     }
 }

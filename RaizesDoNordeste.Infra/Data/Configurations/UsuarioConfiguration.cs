@@ -31,6 +31,10 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
 
                 builder.HasIndex(u => u.Email)
                     .IsUnique();
+
+                builder.HasOne(u => u.Perfil)
+                    .WithMany()
+                    .HasForeignKey(u => u.IdPerfil);
             }
         }
     }
