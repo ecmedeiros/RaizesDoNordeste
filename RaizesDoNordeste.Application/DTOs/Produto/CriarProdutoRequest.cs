@@ -1,6 +1,6 @@
-﻿namespace RaizesDoNordeste.App.DTOs.Auth
+﻿namespace RaizesDoNordeste.App.DTOs.Produto
 {
-    public class AtualizarProdutoRequest
+    public class CriarProdutoRequest
     {
         public string Nome { get; set; } = string.Empty;
         public string Descricao { get; set; } = string.Empty;

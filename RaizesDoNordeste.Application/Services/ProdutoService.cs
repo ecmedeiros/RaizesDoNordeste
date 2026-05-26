@@ -1,4 +1,4 @@
-﻿using RaizesDoNordeste.App.DTOs.Auth;
+﻿using RaizesDoNordeste.App.DTOs.Produto;
 using RaizesDoNordeste.Domain.Entidades;
 using RaizesDoNordeste.Domain.Interfaces;
 
@@ -6,7 +6,6 @@ namespace RaizesDoNordeste.App.Services
 {
     public class ProdutoService(IProdutoRepository produtoRepository)
     {
-
         public async Task<ProdutoResponse> ObterPorId(Guid id)
         {
             var produto = await produtoRepository.ObterPorId(id)
@@ -44,6 +43,7 @@ namespace RaizesDoNordeste.App.Services
             };
 
             if (produto.Preco <= 0) throw new InvalidOperationException("Preço deve ser maior que zero.");
+
 
             await produtoRepository.Adicionar(novoProduto);
 

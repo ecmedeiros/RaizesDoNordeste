@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RaizesDoNordeste.App.DTOs.Produto;
+using RaizesDoNordeste.App.DTOs.Unidade;
 using RaizesDoNordeste.App.Services;
 
 namespace RaizesDoNordeste.API.Controllers
@@ -8,47 +8,47 @@ namespace RaizesDoNordeste.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class ProdutoController(ProdutoService produtoService) : ControllerBase
+    public class UnidadeController(UnidadeService unidadeService) : ControllerBase
     {
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Gerente")]
         public async Task<IActionResult> ObterTodos([FromQuery] int page, [FromQuery] int limit)
         {
-            var produtos = produtoService.ObterTodos(page, limit);
+            var unidades = unidadeService.ObterTodos(page, limit);
 
-            return Ok(produtos);
+            return Ok(unidades);
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Gerente")]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
             try
             {
-                var produto = await produtoService.ObterPorId(id);
-                return Ok(produto);
+                var unidade = await unidadeService.ObterPorId(id);
+                return Ok(unidade);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new
                 {
-                    error = "PRODUTO_NAO_ENCONTRADO",
+                    error = "UNIDADE_NAO_ENCONTRADA",
                     message = ex.Message,
                     timestamp = DateTime.UtcNow,
-                    path = $"/api/produtos/{id}"
+                    path = $"/api/unidades/{id}"
                 });
             }
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin,Gerente")]
-        public async Task<IActionResult> Adicionar([FromBody] CriarProdutoRequest request)
+        public async Task<IActionResult> Adicionar([FromBody] CriarUnidadeRequest request)
         {
             try
             {
-                var produtoNovo = await produtoService.Adicionar(request);
+                var unidadeNovo = await unidadeService.Adicionar(request);
 
-                return CreatedAtAction(nameof(ObterPorId), new { id = produtoNovo.Id }, produtoNovo);
+                return CreatedAtAction(nameof(ObterPorId), new { id = unidadeNovo.Id }, unidadeNovo);
 
 
             }
@@ -56,10 +56,10 @@ namespace RaizesDoNordeste.API.Controllers
             {
                 return Conflict(new
                 {
-                    error = "ERRO_CRIAR_PRODUTO",
+                    error = "ERRO_CRIAR_UNIDADE",
                     message = ex.Message,
                     timestamp = DateTime.UtcNow,
-                    path = "/api/produtos"
+                    path = "/api/unidades"
                 });
             }
         }
@@ -68,31 +68,31 @@ namespace RaizesDoNordeste.API.Controllers
         [Authorize(Roles = "Admin,Gerente")]
         public async Task<IActionResult> Atualizar(
         Guid id,
-        [FromBody] AtualizarProdutoRequest request)
+        [FromBody] AtualizarUnidadeRequest request)
         {
             try
             {
-                var produto = await produtoService.Atualizar(id, request);
-                return Ok(produto);
+                var unidade = await unidadeService.Atualizar(id, request);
+                return Ok(unidade);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new
                 {
-                    error = "PRODUTO_NAO_ENCONTRADO",
+                    error = "UNIDADE_NAO_ENCONTRADA",
                     message = ex.Message,
                     timestamp = DateTime.UtcNow,
-                    path = $"/api/produtos/{id}"
+                    path = $"/api/unidades/{id}"
                 });
             }
             catch (InvalidOperationException ex)
             {
                 return Conflict(new
                 {
-                    error = "ERRO_ATUALIZAR_PRODUTO",
+                    error = "ERRO_ATUALIZAR_UNIDADE",
                     message = ex.Message,
                     timestamp = DateTime.UtcNow,
-                    path = $"/api/produtos/{id}"
+                    path = $"/api/unidades/{id}"
                 });
             }
         }
@@ -103,16 +103,16 @@ namespace RaizesDoNordeste.API.Controllers
         {
             try
             {
-                await produtoService.Deletar(id);
+                await unidadeService.Deletar(id);
                 return NoContent();
             }catch(KeyNotFoundException ex)
             {
                 return NotFound(new
                 {
-                    error = "PRODUTO_NAO_ENCONTRADO",
+                    error = "UNIDADE_NAO_ENCONTRADA",
                     message = ex.Message,
                     timestamp = DateTime.UtcNow,
-                    path = "/api/produtos"
+                    path = "/api/unidades"
                 });
             }
         }

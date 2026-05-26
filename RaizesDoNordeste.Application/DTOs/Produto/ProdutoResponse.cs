@@ -1,4 +1,4 @@
-﻿namespace RaizesDoNordeste.App.DTOs.Auth
+﻿namespace RaizesDoNordeste.App.DTOs.Produto
 {
     public class ProdutoResponse
     {
