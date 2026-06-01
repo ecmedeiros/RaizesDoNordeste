@@ -8,7 +8,7 @@ namespace RaizesDoNordeste.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class UnidadeController(UnidadeService unidadeService) : ControllerBase
+    public class UnidadesController(UnidadeService unidadeService) : ControllerBase
     {
         [HttpGet]
         [Authorize(Roles = "Admin,Gerente")]

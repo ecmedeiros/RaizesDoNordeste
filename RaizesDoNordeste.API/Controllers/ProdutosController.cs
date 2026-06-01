@@ -8,7 +8,7 @@ namespace RaizesDoNordeste.API.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class ProdutoController(ProdutoService produtoService) : ControllerBase
+    public class ProdutosController(ProdutoService produtoService) : ControllerBase
     {
         [HttpGet]
         [AllowAnonymous]

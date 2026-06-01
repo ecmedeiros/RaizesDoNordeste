@@ -5,6 +5,10 @@ using RaizesDoNordeste.Infra.Data;
 
 namespace RaizesDoNordeste.Infra.Repositories
 {
+    public class PedidoRepository(AppDbContext context) : IPedidoRepository
+    {
+
+    }
     public class ProdutoRepository(AppDbContext context) : IProdutoRepository
     {
         public async Task<IEnumerable<Produto?>> ObterTodos(int page, int limit)
