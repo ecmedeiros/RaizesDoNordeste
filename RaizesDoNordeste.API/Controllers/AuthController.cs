@@ -30,7 +30,7 @@ namespace RaizesDoNordeste.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("registro")]
         [AllowAnonymous]
         public async Task<IActionResult> Registro([FromBody] RegistroRequest request)
         {

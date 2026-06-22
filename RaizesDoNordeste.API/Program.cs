@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using RaizesDoNordeste.API.Middlewares;
 using RaizesDoNordeste.App.Services;
 using RaizesDoNordeste.Domain.Interfaces;
 using RaizesDoNordeste.Infra.Data;
 using RaizesDoNordeste.Infra.Repositories;
-using Scalar.AspNetCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +37,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+
+builder.Services.AddOpenApiDocument(config =>
+{
+    config.Title = "Raízes do Nordeste API";
+    config.Version = "v1";
+    config.Description = "API para gerenciamento da rede de lanchonetes";
+
+    config.AddSecurity("JWT", Enumerable.Empty<string>(), new NSwag.OpenApiSecurityScheme
+    {
+        Type = OpenApiSecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Cole apenas o token JWT"
+    });
+
+    config.OperationProcessors.Add(
+        new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+});
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<AuthService>();
@@ -91,8 +109,8 @@ using(var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
 app.UseHttpsRedirection();
