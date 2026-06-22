@@ -9,6 +9,7 @@
         public bool Ativo { get; set; } = true;
         public DateTime? DataAceiteTermos { get; set; }
 
+        public ICollection<PontosUsuario>? Pontos { get; set; }
         public Perfil? Perfil { get; set; }
     }
 }

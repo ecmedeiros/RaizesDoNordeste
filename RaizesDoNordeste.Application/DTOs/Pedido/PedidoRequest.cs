@@ -1,4 +1,4 @@
-﻿namespace RaizesDoNordeste.App.DTOs.Produto
+﻿namespace RaizesDoNordeste.App.DTOs.Pedido
 {
     public class PedidoRequest
     {

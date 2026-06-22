@@ -24,6 +24,17 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
 
                 builder.HasIndex(e => new { e.IdUnidade, e.IdProduto})
                     .IsUnique();
+
+
+                builder.HasOne(e => e.Unidade)
+                    .WithMany(u => u.Estoques)
+                    .HasForeignKey(e => e.IdUnidade)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(e => e.Produto)
+                    .WithMany(p => p.Estoques)
+                    .HasForeignKey(e => e.IdProduto)
+                    .OnDelete(DeleteBehavior.Restrict);
             }
         }
     }

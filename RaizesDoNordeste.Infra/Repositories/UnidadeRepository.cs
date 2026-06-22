@@ -17,6 +17,7 @@ namespace RaizesDoNordeste.Infra.Repositories
         public async Task<Unidade?> ObterPorId(Guid id)
         {
             return await context.Unidades
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task Adicionar(Unidade unidade)

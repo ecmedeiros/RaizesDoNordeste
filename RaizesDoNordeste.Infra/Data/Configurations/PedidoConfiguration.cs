@@ -34,8 +34,17 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
 
                 builder.Property(u => u.CanalPedido)
                     .IsRequired()
-                    .HasColumnName("IdCanalPedido")
-                    .HasMaxLength(100);
+                    .HasColumnName("IdCanalPedido");
+
+                builder.HasOne(p => p.Usuario)
+                       .WithMany()
+                       .HasForeignKey(p => p.IdUsuario)
+                       .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(p => p.Unidade)
+                       .WithMany()
+                       .HasForeignKey(p => p.IdUnidade)
+                       .OnDelete(DeleteBehavior.Cascade);
             }
         }
     }

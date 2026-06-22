@@ -14,6 +14,13 @@ namespace RaizesDoNordeste.App.DTOs.Pedido
         public Guid IdUnidade { get; set; }
         public bool EhEntrega { get; set; }
         public string Observacao { get; set; } = string.Empty;
-        public ICollection<ItensPedido> Itens { get; set; } = [];
+        public List<ItensPedidoResponse> Itens { get; set; } = [];
+    }
+
+    public class ItensPedidoResponse
+    {
+        public Guid IdProduto { get; set; }
+        public int Quantidade { get; set; }
+        public decimal PrecoUnitario { get; set; }
     }
 }

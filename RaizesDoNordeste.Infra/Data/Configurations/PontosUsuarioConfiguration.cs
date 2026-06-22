@@ -21,7 +21,12 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
                 
                 builder.Property(u => u.Validade)
                     .IsRequired();
-                
+
+                builder.HasOne(i => i.Usuario)
+                    .WithMany(p => p.Pontos)
+                    .HasForeignKey(i => i.IdUsuario)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 builder.HasIndex(u => u.IdUsuario)
                     .IsUnique();
             }

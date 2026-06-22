@@ -8,5 +8,8 @@
 
         public Unidade? Unidade { get; set; }
         public Produto? Produto { get; set; }
+        public ICollection<MovimentacaoEstoque> Movimentacoes { get; set; } = new List<MovimentacaoEstoque>();
+
+
     }
 }

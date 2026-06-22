@@ -16,5 +16,7 @@
         public TimeOnly HorarioAbertura { get; set; }
         public TimeOnly HorarioFechamento { get; set; }
         public bool Ativo { get; set; } = true;
+        public ICollection<Estoque> Estoques { get; set; } = new List<Estoque>();
+
     }
 }

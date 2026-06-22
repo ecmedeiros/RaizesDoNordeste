@@ -47,6 +47,7 @@ namespace RaizesDoNordeste.Infra.Migrations
                     Nome = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Preco = table.Column<decimal>(type: "TEXT", nullable: false),
                     Descricao = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Ativo = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: true),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -153,8 +154,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     IdProduto = table.Column<Guid>(type: "TEXT", nullable: false),
                     IdUnidade = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UnidadeId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    ProdutoId = table.Column<Guid>(type: "TEXT", nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -162,15 +161,17 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     table.PrimaryKey("PK_Estoques", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Estoques_Produtos_ProdutoId",
-                        column: x => x.ProdutoId,
+                        name: "FK_Estoques_Produtos_IdProduto",
+                        column: x => x.IdProduto,
                         principalTable: "Produtos",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Estoques_Unidades_UnidadeId",
-                        column: x => x.UnidadeId,
+                        name: "FK_Estoques_Unidades_IdUnidade",
+                        column: x => x.IdUnidade,
                         principalTable: "Unidades",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -178,7 +179,7 @@ namespace RaizesDoNordeste.Infra.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    IdCanalPedido = table.Column<int>(type: "INTEGER", maxLength: 100, nullable: false),
+                    IdCanalPedido = table.Column<int>(type: "INTEGER", nullable: false),
                     IdStatus = table.Column<int>(type: "INTEGER", nullable: false),
                     IdStatusPagamento = table.Column<int>(type: "INTEGER", nullable: false),
                     PrecoTotal = table.Column<decimal>(type: "TEXT", nullable: false),
@@ -187,8 +188,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     IdUnidade = table.Column<Guid>(type: "TEXT", nullable: false),
                     EhEntrega = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: false),
                     Observacao = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UnidadeId = table.Column<Guid>(type: "TEXT", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -196,14 +195,14 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     table.PrimaryKey("PK_Pedidos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pedidos_Unidades_UnidadeId",
-                        column: x => x.UnidadeId,
+                        name: "FK_Pedidos_Unidades_IdUnidade",
+                        column: x => x.IdUnidade,
                         principalTable: "Unidades",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Pedidos_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
+                        name: "FK_Pedidos_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -217,7 +216,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     IdUsuario = table.Column<Guid>(type: "TEXT", nullable: false),
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     Validade = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "TEXT", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -225,8 +223,8 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     table.PrimaryKey("PK_PontosUsuarios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PontosUsuarios_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
+                        name: "FK_PontosUsuarios_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -242,8 +240,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     IdUsuario = table.Column<Guid>(type: "TEXT", nullable: false),
                     Motivo = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    EstoqueId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "TEXT", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -251,17 +247,17 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     table.PrimaryKey("PK_MovimentacaoEstoques", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MovimentacaoEstoques_Estoques_EstoqueId",
-                        column: x => x.EstoqueId,
+                        name: "FK_MovimentacaoEstoques_Estoques_IdEstoque",
+                        column: x => x.IdEstoque,
                         principalTable: "Estoques",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MovimentacaoEstoques_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
+                        name: "FK_MovimentacaoEstoques_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -273,8 +269,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     IdProduto = table.Column<Guid>(type: "TEXT", nullable: false),
                     IdPedido = table.Column<Guid>(type: "TEXT", nullable: false),
-                    PedidoId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ProdutoId = table.Column<Guid>(type: "TEXT", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
@@ -282,17 +276,17 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     table.PrimaryKey("PK_ItensPedidos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ItensPedidos_Pedidos_PedidoId",
-                        column: x => x.PedidoId,
+                        name: "FK_ItensPedidos_Pedidos_IdPedido",
+                        column: x => x.IdPedido,
                         principalTable: "Pedidos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ItensPedidos_Produtos_ProdutoId",
-                        column: x => x.ProdutoId,
+                        name: "FK_ItensPedidos_Produtos_IdProduto",
+                        column: x => x.IdProduto,
                         principalTable: "Produtos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -343,20 +337,20 @@ namespace RaizesDoNordeste.Infra.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Estoques_IdProduto",
+                table: "Estoques",
+                column: "IdProduto");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Estoques_IdUnidade_IdProduto",
                 table: "Estoques",
                 columns: new[] { "IdUnidade", "IdProduto" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Estoques_ProdutoId",
-                table: "Estoques",
-                column: "ProdutoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Estoques_UnidadeId",
-                table: "Estoques",
-                column: "UnidadeId");
+                name: "IX_ItensPedidos_IdPedido",
+                table: "ItensPedidos",
+                column: "IdPedido");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItensPedidos_IdProduto_IdPedido",
@@ -365,34 +359,24 @@ namespace RaizesDoNordeste.Infra.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItensPedidos_PedidoId",
-                table: "ItensPedidos",
-                column: "PedidoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ItensPedidos_ProdutoId",
-                table: "ItensPedidos",
-                column: "ProdutoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MovimentacaoEstoques_EstoqueId",
+                name: "IX_MovimentacaoEstoques_IdEstoque",
                 table: "MovimentacaoEstoques",
-                column: "EstoqueId");
+                column: "IdEstoque");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MovimentacaoEstoques_UsuarioId",
+                name: "IX_MovimentacaoEstoques_IdUsuario",
                 table: "MovimentacaoEstoques",
-                column: "UsuarioId");
+                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_UnidadeId",
+                name: "IX_Pedidos_IdUnidade",
                 table: "Pedidos",
-                column: "UnidadeId");
+                column: "IdUnidade");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pedidos_UsuarioId",
+                name: "IX_Pedidos_IdUsuario",
                 table: "Pedidos",
-                column: "UsuarioId");
+                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PontosUsuarios_IdUsuario",
@@ -401,14 +385,9 @@ namespace RaizesDoNordeste.Infra.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PontosUsuarios_UsuarioId",
-                table: "PontosUsuarios",
-                column: "UsuarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Produtos_Nome_Preco",
+                name: "IX_Produtos_Nome_Descricao",
                 table: "Produtos",
-                columns: new[] { "Nome", "Preco" },
+                columns: new[] { "Nome", "Descricao" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

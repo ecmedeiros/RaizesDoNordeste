@@ -73,20 +73,12 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<Guid>("IdUnidade")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ProdutoId")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Quantidade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("UnidadeId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProdutoId");
-
-                    b.HasIndex("UnidadeId");
+                    b.HasIndex("IdProduto");
 
                     b.HasIndex("IdUnidade", "IdProduto")
                         .IsUnique();
@@ -112,13 +104,7 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<Guid>("IdProduto")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("PedidoId")
-                        .HasColumnType("TEXT");
-
                     b.Property<decimal>("PrecoUnitario")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("ProdutoId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Quantidade")
@@ -126,9 +112,7 @@ namespace RaizesDoNordeste.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId");
-
-                    b.HasIndex("ProdutoId");
+                    b.HasIndex("IdPedido");
 
                     b.HasIndex("IdProduto", "IdPedido")
                         .IsUnique();
@@ -148,9 +132,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("EstoqueId")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("IdEstoque")
                         .HasColumnType("TEXT");
 
@@ -168,14 +149,11 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<int>("Quantidade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("EstoqueId");
+                    b.HasIndex("IdEstoque");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("MovimentacaoEstoques", (string)null);
                 });
@@ -187,7 +165,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("CanalPedido")
-                        .HasMaxLength(100)
                         .HasColumnType("INTEGER")
                         .HasColumnName("IdCanalPedido");
 
@@ -225,17 +202,11 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<decimal>("PrecoTotal")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UnidadeId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UnidadeId");
+                    b.HasIndex("IdUnidade");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("Pedidos", (string)null);
                 });
@@ -291,9 +262,6 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Property<int>("Quantidade")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("Validade")
                         .HasColumnType("TEXT");
 
@@ -301,8 +269,6 @@ namespace RaizesDoNordeste.Infra.Migrations
 
                     b.HasIndex("IdUsuario")
                         .IsUnique();
-
-                    b.HasIndex("UsuarioId");
 
                     b.ToTable("PontosUsuarios", (string)null);
                 });
@@ -589,12 +555,16 @@ namespace RaizesDoNordeste.Infra.Migrations
             modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Estoque", b =>
                 {
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("ProdutoId");
+                        .WithMany("Estoques")
+                        .HasForeignKey("IdProduto")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Unidade", "Unidade")
-                        .WithMany()
-                        .HasForeignKey("UnidadeId");
+                        .WithMany("Estoques")
+                        .HasForeignKey("IdUnidade")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Produto");
 
@@ -605,14 +575,14 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Pedido", "Pedido")
                         .WithMany("Itens")
-                        .HasForeignKey("PedidoId")
+                        .HasForeignKey("IdPedido")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Produto", "Produto")
                         .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("IdProduto")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Pedido");
@@ -623,15 +593,15 @@ namespace RaizesDoNordeste.Infra.Migrations
             modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.MovimentacaoEstoque", b =>
                 {
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Estoque", "Estoque")
-                        .WithMany()
-                        .HasForeignKey("EstoqueId")
+                        .WithMany("Movimentacoes")
+                        .HasForeignKey("IdEstoque")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Usuario", "Usuario")
                         .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Estoque");
@@ -643,13 +613,13 @@ namespace RaizesDoNordeste.Infra.Migrations
                 {
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Unidade", "Unidade")
                         .WithMany()
-                        .HasForeignKey("UnidadeId")
+                        .HasForeignKey("IdUnidade")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Usuario", "Usuario")
                         .WithMany()
-                        .HasForeignKey("UsuarioId")
+                        .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -661,8 +631,8 @@ namespace RaizesDoNordeste.Infra.Migrations
             modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.PontosUsuario", b =>
                 {
                     b.HasOne("RaizesDoNordeste.Domain.Entidades.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
+                        .WithMany("Pontos")
+                        .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -680,9 +650,29 @@ namespace RaizesDoNordeste.Infra.Migrations
                     b.Navigation("Perfil");
                 });
 
+            modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Estoque", b =>
+                {
+                    b.Navigation("Movimentacoes");
+                });
+
             modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Pedido", b =>
                 {
                     b.Navigation("Itens");
+                });
+
+            modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Produto", b =>
+                {
+                    b.Navigation("Estoques");
+                });
+
+            modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Unidade", b =>
+                {
+                    b.Navigation("Estoques");
+                });
+
+            modelBuilder.Entity("RaizesDoNordeste.Domain.Entidades.Usuario", b =>
+                {
+                    b.Navigation("Pontos");
                 });
 #pragma warning restore 612, 618
         }

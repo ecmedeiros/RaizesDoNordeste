@@ -28,6 +28,16 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
                 
                 builder.Property(u => u.IdUsuario)
                     .IsRequired();
+
+                builder.HasOne(i => i.Estoque)
+                    .WithMany(p => p.Movimentacoes)
+                    .HasForeignKey(i => i.IdEstoque)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(i => i.Usuario)
+                    .WithMany()
+                    .HasForeignKey(i => i.IdUsuario)
+                    .OnDelete(DeleteBehavior.Restrict);
             }
         }
     }

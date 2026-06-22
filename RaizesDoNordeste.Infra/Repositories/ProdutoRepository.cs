@@ -5,10 +5,6 @@ using RaizesDoNordeste.Infra.Data;
 
 namespace RaizesDoNordeste.Infra.Repositories
 {
-    public class PedidoRepository(AppDbContext context) : IPedidoRepository
-    {
-
-    }
     public class ProdutoRepository(AppDbContext context) : IProdutoRepository
     {
         public async Task<IEnumerable<Produto?>> ObterTodos(int page, int limit)
@@ -23,6 +19,14 @@ namespace RaizesDoNordeste.Infra.Repositories
         {
             return await context.Produtos
                 .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<IEnumerable<Produto>> ObterPorIds(IEnumerable<Guid> ids)
+        {
+            return await context.Produtos
+                .AsNoTracking()
+                .Where(p => ids.Contains(p.Id))
+                .ToListAsync();
         }
 
         public async Task Adicionar(Produto produto)

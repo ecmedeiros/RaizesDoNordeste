@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using RaizesDoNordeste.Domain.Entidades;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 
 namespace RaizesDoNordeste.Infra.Data
 {
@@ -21,7 +20,7 @@ namespace RaizesDoNordeste.Infra.Data
         public DbSet<MovimentacaoEstoque> MovimentacaoEstoques { get; set; }
         public DbSet<StatusPagamento> StatusPagamentos { get; set; }
         public DbSet<Status> Status { get; set; }
-        public DbSet<Unidade> CanalPedido { get; set; }
+        public DbSet<CanalPedido> CanalPedido { get; set; }
         public DbSet<Perfil> Perfil { get; set; }
         public DbSet<TipoEstoque> TipoEstoque { get; set; }
 

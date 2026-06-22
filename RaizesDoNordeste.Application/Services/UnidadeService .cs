@@ -3,6 +3,7 @@ using RaizesDoNordeste.Domain.Entidades;
 using RaizesDoNordeste.Domain.Interfaces;
 using System.Text.RegularExpressions;
 
+
 namespace RaizesDoNordeste.App.Services
 {
     public class UnidadeService(IUnidadeRepository unidadeRepository)

@@ -8,23 +8,28 @@ namespace RaizesDoNordeste.Infra.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ItensPedido> builder)
         {
-            {
-                builder.ToTable("ItensPedidos");
+            builder.ToTable("ItensPedidos");
 
-                builder.HasKey(u => u.Id);
+            builder.HasKey(i => i.Id);
 
-                builder.Property(u => u.PrecoUnitario)
-                    .IsRequired();
-                builder.Property(u => u.Quantidade)
-                    .IsRequired();
-                builder.Property(u => u.IdProduto)
-                    .IsRequired();
-                builder.Property(u => u.IdPedido)
-                    .IsRequired();
+            builder.Property(i => i.PrecoUnitario)
+                .IsRequired();
 
-                builder.HasIndex(e => new { e.IdProduto, e.IdPedido })
-                    .IsUnique();
-            }
+            builder.Property(i => i.Quantidade)
+                .IsRequired();
+
+            builder.HasOne(i => i.Pedido)
+                .WithMany(p => p.Itens)
+                .HasForeignKey(i => i.IdPedido)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(i => i.Produto)
+                .WithMany()
+                .HasForeignKey(i => i.IdProduto)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(i => new { i.IdProduto, i.IdPedido })
+                .IsUnique();
         }
     }
 }

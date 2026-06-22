@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RaizesDoNordeste.API.Middlewares;
 using RaizesDoNordeste.App.Services;
 using RaizesDoNordeste.Domain.Interfaces;
 using RaizesDoNordeste.Infra.Data;
@@ -42,7 +44,40 @@ builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<IUnidadeRepository, UnidadeRepository>();
 builder.Services.AddScoped<UnidadeService>();
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<PedidoService>();
+builder.Services.AddScoped<PagamentoService>();
+builder.Services.AddScoped<IEstoqueRepository, EstoqueRepository>();
+builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
+builder.Services.AddScoped<EstoqueService>();
+builder.Services.AddScoped<IPontosUsuarioRepository, PontosUsuarioRepository>();
+builder.Services.AddScoped<FidelidadeService>();
 
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors.Select(err => new
+                {
+                    field = e.Key,
+                    issue = err.ErrorMessage
+                }));
+
+            var result = new
+            {
+                error = "ERRO_VALIDACAO",
+                message = "Um ou mais erros de validação ocorreram.",
+                details = errors,
+                timestamp = DateTime.UtcNow,
+                path = context.HttpContext.Request.Path.Value
+            };
+
+            return new UnprocessableEntityObjectResult(result);
+        };
+    });
 var app = builder.Build();
 
 using(var scope = app.Services.CreateScope())
@@ -61,6 +96,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
