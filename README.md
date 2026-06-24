@@ -127,19 +127,20 @@ cd RaizesDoNordeste.API
 dotnet run
 ```
 
-A API estará disponível em:
+Após iniciar, o terminal exibirá a porta gerada automaticamente:
+
 ```
-https://localhost:7000
-http://localhost:5000
+Now listening on: https://localhost:7134
+Now listening on: http://localhost:5134
 ```
 
-> A porta pode variar. Verifique o terminal após iniciar.
+> A porta é gerada automaticamente pelo .NET e pode variar a cada execução ou máquina. Anote a porta exibida no terminal e use ela nos próximos passos.
 
 ---
 
 ## Como acessar a documentação
 
-Com a API rodando, acesse no navegador:
+Com a API rodando, acesse no navegador substituindo `{porta}` pela porta exibida no terminal:
 
 ```
 https://localhost:{porta}/swagger
@@ -233,6 +234,22 @@ Body: 3  (Em Preparo)
 | Fidelidade    | POST   | /api/fidelidade/resgatar      | Cliente              |
 
 ---
+
+
+## Como rodar os testes (Postman)
+
+1. Importe o arquivo `Raízes_do_Nordeste_API_postman_collection.json` no Postman
+2. Atualize a variável `baseUrl` com a porta exibida no terminal:
+```
+Ex: https://localhost:7134
+```
+3. Execute na ordem sugerida:
+   - **Auth/T01** → token de cliente salvo automaticamente
+   - **Auth/T02** → token de gerente salvo automaticamente
+   - **Pedidos/T09** → pedidoId salvo automaticamente
+   - Execute os demais na ordem das pastas
+
+> Os tokens e o pedidoId são salvos automaticamente pelas variáveis da coleção.
 
 ## Canais de pedido
 

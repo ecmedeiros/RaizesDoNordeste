@@ -1,0 +1,1207 @@
+{
+  "info": {
+    "_postman_id": "8d43f9ae-3a47-4a31-b516-76ae4c039721",
+    "name": "Raízes do Nordeste API",
+    "description": "Coleção de testes para a API da rede de lanchonetes Raízes do Nordeste.\n\nANTES DE RODAR:\n1. Inicie a API e anote a porta exibida no terminal:\n   Now listening on: https://localhost:{porta}\n2. Atualize a variável baseUrl com sua porta (ex: https://localhost:7134)\n3. Execute na ordem sugerida abaixo\n\nFluxo sugerido:\n1. Auth/T01 - Login Válido (Cliente) → token salvo automaticamente na variável token\n2. Auth/T02 - Login Válido (Gerente) → token salvo automaticamente na variável tokenGerente\n3. Pedidos/T09 - Criar Pedido Válido → pedidoId salvo automaticamente na variável pedidoId\n4. Execute os demais na ordem das pastas: Produtos → Pedidos → Pagamentos → Estoques → Fidelidade → Erros Gerais",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44754131"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "T01 - Login Válido (Cliente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna accessToken', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.accessToken).to.be.a('string');",
+                  "    pm.collectionVariables.set('token', json.accessToken);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"cliente@teste.com.br\",\n    \"senha\": \"Cliente@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "T01 - Login com credenciais válidas. Deve retornar 200 e accessToken."
+          },
+          "response": []
+        },
+        {
+          "name": "T02 - Login Válido (Gerente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna accessToken', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.accessToken).to.be.a('string');",
+                  "    pm.collectionVariables.set('tokenGerente', json.accessToken);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"gerente@raizesnordeste.com.br\",\n    \"senha\": \"Gerente@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "T02 - Login com credenciais de gerente. Salva token na variável tokenGerente."
+          },
+          "response": []
+        },
+        {
+          "name": "T03 - Login Inválido (Senha Errada)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('NAO_AUTORIZADO');",
+                  "    pm.expect(json.message).to.be.a('string');",
+                  "    pm.expect(json.timestamp).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"cliente@teste.com.br\",\n    \"senha\": \"SenhaErrada@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "T03 - Login com senha incorreta. Deve retornar 401 com erro padronizado."
+          },
+          "response": []
+        },
+        {
+          "name": "T04 - Registro de Novo Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Retorna dados do usuário', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.email).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Novo Cliente\",\n    \"email\": \"novocliente@teste.com.br\",\n    \"senha\": \"Novo@123\",\n    \"aceitouTermos\": true,\n    \"consentimentoFidelidade\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/registro",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "registro"
+              ]
+            },
+            "description": "T04 - Registro de novo usuário. Deve retornar 201."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Produtos",
+      "item": [
+        {
+          "name": "T05 - Listar Produtos (Público)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna lista de produtos', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "T05 - Listar produtos sem autenticação. Deve retornar 200."
+          },
+          "response": []
+        },
+        {
+          "name": "T06 - Buscar Produto por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna produto', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "    pm.expect(json.nome).to.be.a('string');",
+                  "    pm.expect(json.preco).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/f6a7b8c9-d0e1-2345-fabc-456789012345",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos",
+                "f6a7b8c9-d0e1-2345-fabc-456789012345"
+              ]
+            },
+            "description": "T06 - Buscar produto por ID válido. Deve retornar 200."
+          },
+          "response": []
+        },
+        {
+          "name": "T07 - Buscar Produto Inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('NAO_ENCONTRADO');",
+                  "    pm.expect(json.timestamp).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/00000000-0000-0000-0000-000000000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos",
+                "00000000-0000-0000-0000-000000000000"
+              ]
+            },
+            "description": "T07 - Buscar produto com ID inexistente. Deve retornar 404 padronizado."
+          },
+          "response": []
+        },
+        {
+          "name": "T08 - Criar Produto Sem Permissão (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 403', function() {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Produto Teste\",\n  \"descricao\": \"Descricao teste\",\n  \"preco\": 10.00,\n  \"ativo\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos"
+              ]
+            },
+            "description": "T08 - Cliente tentando criar produto. Deve retornar 403."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "T09 - Criar Pedido Válido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Retorna pedido criado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "    pm.expect(json.idStatus).to.equal(1);",
+                  "    pm.expect(json.idStatusPagamento).to.equal(1);",
+                  "    pm.collectionVariables.set('pedidoId', json.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idCanalPedido\": 1,\n    \"ehEntrega\": false,\n    \"idUnidade\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n    \"usarPontos\": false,\n    \"observacao\": \"Sem cebola por favor\",\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n            \"quantidade\": 2\n        },\n        {\n            \"idProduto\": \"a7b8c9d0-e1f2-3456-abcd-567890123456\",\n            \"quantidade\": 1\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T09 - Criar pedido com itens válidos. Deve retornar 201 com status Pedido Realizado."
+          },
+          "response": []
+        },
+        {
+          "name": "T10 - Criar Pedido Sem Token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idCanalPedido\": 1,\n    \"ehEntrega\": false,\n    \"idUnidade\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n    \"usarPontos\": false,\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n            \"quantidade\": 1\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T10 - Criar pedido sem token. Deve retornar 401."
+          },
+          "response": []
+        },
+        {
+          "name": "T11 - Criar Pedido com Unidade Inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('NAO_ENCONTRADO');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idCanalPedido\": 1,\n    \"ehEntrega\": false,\n    \"idUnidade\": \"00000000-0000-0000-0000-000000000000\",\n    \"usarPontos\": false,\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n            \"quantidade\": 1\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T11 - Criar pedido com unidade inexistente. Deve retornar 404."
+          },
+          "response": []
+        },
+        {
+          "name": "T12 - Criar Pedido com Estoque Insuficiente (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409', function() {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('ERRO_NEGOCIO');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idCanalPedido\": 1,\n    \"ehEntrega\": false,\n    \"idUnidade\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n    \"usarPontos\": false,\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n            \"quantidade\": 99999\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T12 - Criar pedido com quantidade maior que estoque. Deve retornar 409."
+          },
+          "response": []
+        },
+        {
+          "name": "T13 - Criar Pedido com canalPedido Inválido (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 422', function() {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('ERRO_VALIDACAO');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idCanalPedido\": 99,\n    \"ehEntrega\": false,\n    \"idUnidade\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n    \"usarPontos\": false,\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n            \"quantidade\": 1\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T13 - Criar pedido com canalPedido inválido (99). Deve retornar 422."
+          },
+          "response": []
+        },
+        {
+          "name": "T14 - Buscar Pedido por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna pedido', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": "T14 - Buscar pedido criado no T09. Deve retornar 200."
+          },
+          "response": []
+        },
+        {
+          "name": "T15 - Atualizar Status do Pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', function() {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenGerente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}",
+                "status"
+              ]
+            },
+            "description": "T15 - Atualizar status do pedido para Em Preparo (3). Deve retornar 204."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pagamentos",
+      "item": [
+        {
+          "name": "T17 - Processar Pagamento Mock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna status do pagamento', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.be.oneOf(['APROVADO', 'RECUSADO']);",
+                  "    pm.expect(json.idPedido).to.be.a('string');",
+                  "    pm.expect(json.valor).to.be.a('number');",
+                  "    pm.expect(json.mensagem).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idPedido\": \"{{pedidoId}}\",\n    \"formaPagamento\": \"MOCK\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pagamentos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pagamentos"
+              ]
+            },
+            "description": "T17 - Processar pagamento mock. Deve retornar 200 com APROVADO ou RECUSADO."
+          },
+          "response": []
+        },
+        {
+          "name": "T18 - Pagamento de Pedido Inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('NAO_ENCONTRADO');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idPedido\": \"00000000-0000-0000-0000-000000000000\",\n    \"formaPagamento\": \"MOCK\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pagamentos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pagamentos"
+              ]
+            },
+            "description": "T18 - Pagamento com pedido inexistente. Deve retornar 404."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Estoques",
+      "item": [
+        {
+          "name": "T19 - Listar Estoque por Unidade",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna lista de estoques', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenGerente}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/estoques/a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "estoques",
+                "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+              ]
+            },
+            "description": "T19 - Listar estoque da unidade de Fortaleza. Deve retornar 200."
+          },
+          "response": []
+        },
+        {
+          "name": "T20 - Entrada de Estoque",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', function() {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenGerente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idUnidade\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n    \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n    \"quantidade\": 50,\n    \"motivo\": \"Reposição de estoque\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/estoques/entrada",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "estoques",
+                "entrada"
+              ]
+            },
+            "description": "T20 - Entrada de 50 unidades no estoque. Deve retornar 204."
+          },
+          "response": []
+        },
+        {
+          "name": "T21 - Saída de Estoque com Quantidade Insuficiente (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409', function() {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('ERRO_NEGOCIO');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenGerente}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"idUnidade\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n    \"idProduto\": \"f6a7b8c9-d0e1-2345-fabc-456789012345\",\n    \"quantidade\": 99999,\n    \"motivo\": \"Teste de erro\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/estoques/saida",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "estoques",
+                "saida"
+              ]
+            },
+            "description": "T21 - Saída com quantidade maior que estoque. Deve retornar 409."
+          },
+          "response": []
+        },
+        {
+          "name": "T22 - Estoque Sem Permissão de Cliente (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 403', function() {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/estoques/a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "estoques",
+                "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+              ]
+            },
+            "description": "T22 - Cliente tentando acessar estoque. Deve retornar 403."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Fidelidade",
+      "item": [
+        {
+          "name": "T23 - Consultar Saldo de Pontos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna saldo de pontos', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.saldoPontos).to.be.a('number');",
+                  "    pm.expect(json.idUsuario).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/fidelidade/e5f6a7b8-c9d0-1234-efab-345678901234",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fidelidade",
+                "e5f6a7b8-c9d0-1234-efab-345678901234"
+              ]
+            },
+            "description": "T23 - Consultar saldo de pontos do cliente. Deve retornar 200."
+          },
+          "response": []
+        },
+        {
+          "name": "T24 - Resgatar Pontos Sem Saldo (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409', function() {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "pm.test('Retorna erro padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('ERRO_NEGOCIO');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"pontosResgatar\": 99999\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/fidelidade/resgatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "fidelidade",
+                "resgatar"
+              ]
+            },
+            "description": "T24 - Resgatar mais pontos do que o saldo disponível. Deve retornar 409."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Erros Gerais",
+      "item": [
+        {
+          "name": "T25 - Acesso sem Token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T25 - Acessar endpoint protegido sem token. Deve retornar 401."
+          },
+          "response": []
+        },
+        {
+          "name": "T26 - Campo Obrigatório Ausente (422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 422', function() {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Retorna erro de validação padronizado', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.error).to.equal('ERRO_VALIDACAO');",
+                  "    pm.expect(json.details).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ehEntrega\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "T26 - Criar pedido sem campos obrigatórios. Deve retornar 422 com detalhes."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "tokenGerente",
+      "value": ""
+    },
+    {
+      "key": "pedidoId",
+      "value": ""
+    }
+  ]
+}
