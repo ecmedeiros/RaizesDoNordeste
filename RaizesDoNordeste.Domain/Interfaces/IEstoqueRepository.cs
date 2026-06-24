@@ -8,6 +8,6 @@ namespace RaizesDoNordeste.Domain.Interfaces
         Task<Estoque?> ObterPorUnidadeEProdutoAsync(Guid idUnidade, Guid idProduto);
         Task AdicionarAsync(Estoque estoque);
         Task AtualizarAsync(Estoque estoque);
-        Task<IEnumerable<Estoque>> ObterPorIds(List<Guid> itensIds);
+        Task<IEnumerable<Estoque>> ObterPorIdsDeProduto(List<Guid> itensIds);
     }
 }

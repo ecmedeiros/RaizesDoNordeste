@@ -43,11 +43,11 @@ namespace RaizesDoNordeste.Infra.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Estoque>> ObterPorIds(List<Guid> itensIds)
+        public async Task<IEnumerable<Estoque>> ObterPorIdsDeProduto(List<Guid> itensIds)
         {
             return await _context.Estoques
                 .AsNoTracking()
-                .Where(e => itensIds.Contains(e.Id))
+                .Where(e => itensIds.Contains(e.IdProduto))
                 .ToListAsync();
         }
     }
